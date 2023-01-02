@@ -11,18 +11,18 @@ internal class Program
     {
         Console.WriteLine("Generating MIDI files...");
 
-        var fourBars = (MusicalTimeSpan)MusicalTimeSpan.Whole.Multiply(1);
-        var eightBars = (MusicalTimeSpan)MusicalTimeSpan.Whole.Multiply(2);
+        var fourBars = (MusicalTimeSpan)MusicalTimeSpan.Whole.Multiply(8);
+        var eightBars = (MusicalTimeSpan)MusicalTimeSpan.Whole.Multiply(16);
 
         MidiFile bassPattern = Patterns.GetRandomPattern(false, 2, 2, 3, fourBars).ToFile(TempoMap.Default);
-        MidiFile melodyPattern = Patterns.GetRandomPattern(false, 4, 1, 5, eightBars).ToFile(TempoMap.Default);
+        MidiFile melodyPattern = Patterns.GetRandomPattern(false, 4, 1, 5, fourBars).ToFile(TempoMap.Default);
         MidiFile chordPattern = Patterns.GetRandomPattern(true, 2, 3, 4, fourBars).ToFile(TempoMap.Default);
 
         Repeater repeater= new();
 
-        MidiFile bassMidi = repeater.Repeat(bassPattern, 4);
+        MidiFile bassMidi = repeater.Repeat(bassPattern, 2);
         MidiFile melodyMidi = repeater.Repeat(melodyPattern, 2);
-        MidiFile chordMidi = repeater.Repeat(chordPattern, 4);
+        MidiFile chordMidi = repeater.Repeat(chordPattern, 2);
 
         MidiFiles.WriteMidiFile("bass.mid", bassMidi);
         MidiFiles.WriteMidiFile("melody.mid", melodyMidi);
