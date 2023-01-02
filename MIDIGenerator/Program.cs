@@ -2,6 +2,7 @@
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using Melanchall.DryWetMidi.MusicTheory;
+using Melanchall.DryWetMidi.Tools;
 using MIDIGenerator;
 
 internal class Program
@@ -10,13 +11,18 @@ internal class Program
     {
         Console.WriteLine("Generating MIDI files...");
 
-        Pattern bassPattern = Patterns.GetRandomPattern(2,3,false);
-        Pattern melodyPattern = Patterns.GetRandomPattern(4,5,false);
-        Pattern chordPattern = Patterns.GetRandomPattern(1,4,true);
+        var fourBars = (MusicalTimeSpan)MusicalTimeSpan.Whole.Multiply(1);
+        var eightBars = (MusicalTimeSpan)MusicalTimeSpan.Whole.Multiply(2);
 
-        MidiFile bassMidi = bassPattern.ToFile(TempoMap.Default);
-        MidiFile melodyMidi = melodyPattern.ToFile(TempoMap.Default);
-        MidiFile chordMidi = chordPattern.ToFile(TempoMap.Default);
+        MidiFile bassPattern = Patterns.GetRandomPattern(false, 2, 2, 3, fourBars).ToFile(TempoMap.Default);
+        MidiFile melodyPattern = Patterns.GetRandomPattern(false, 4, 1, 5, eightBars).ToFile(TempoMap.Default);
+        MidiFile chordPattern = Patterns.GetRandomPattern(true, 2, 3, 4, fourBars).ToFile(TempoMap.Default);
+
+        Repeater repeater= new();
+
+        MidiFile bassMidi = repeater.Repeat(bassPattern, 4);
+        MidiFile melodyMidi = repeater.Repeat(melodyPattern, 2);
+        MidiFile chordMidi = repeater.Repeat(chordPattern, 4);
 
         MidiFiles.WriteMidiFile("bass.mid", bassMidi);
         MidiFiles.WriteMidiFile("melody.mid", melodyMidi);
